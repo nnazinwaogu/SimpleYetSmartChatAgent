@@ -1,0 +1,19 @@
+{
+  "name": "antropicagentsdkproject",
+  "version": "1.0.0",
+  "description": "A simple chat agent using OpenRouter's Agent toolkit",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["openrouter", "agent", "chat", "ai"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openrouter/sdk": "^0.12.35",
+    "dotenv": "^17.4.2",
+    "readline-sync": "^1.4.10"
+  }
+}

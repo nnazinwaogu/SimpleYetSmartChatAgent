@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.claude/
+
+#Tests
+TEST_RESULTS.md
+test-agent.js
+test-chat.js
+test-conversation.txt
+debug-agent.js
+
+# Misc
+FINAL_SUMMARY.md
+CLAUDE.md
