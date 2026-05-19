@@ -30,7 +30,7 @@ This chat agent follows a simple two-layer architecture:
 1. **Interface Layer** (`index.js`): Handles command-line interface using Node's readline module
 2. **Agent Layer** (`agent.js`): Manages AI interactions via OpenRouter's SDK and conversation state
 
-The agent maintains conversation history in memory to provide context-aware responses. Each user message is added to the history, and the entire history is sent with each API call to the OpenRouter service.
+The agent maintains conversation history in memory to provide context-aware responses. Each user message is added to the history, and the entire history is sent with each API call to the OpenRouter service. Conversation history is persisted to disk between sessions to maintain context across application restarts.
 
 ## Configuration
 

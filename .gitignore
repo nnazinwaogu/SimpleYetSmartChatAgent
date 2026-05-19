@@ -7,11 +7,12 @@ node_modules/
 
 #Tests
 TEST_RESULTS.md
-test-agent.js
-test-chat.js
-test-conversation.txt
 debug-agent.js
 
 # Misc
 FINAL_SUMMARY.md
+
+# History directory - keep directory but ignore contents
+history/
+!history/.gitkeep
 

@@ -8,8 +8,9 @@ This project implements a simple yet powerful chat interface that leverages Open
 
 ## Features
 
-- **Conversation History**: Maintains context across messages for coherent dialogue
-- **Free Model Support**: Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
+- **Persistent Conversation History**: Maintains context across messages and automatically saves/loads history between sessions
+- **Manual Save/Load Conversations**: Save conversations to specific files (`/save <filename>`) and load them later (`/load <filename>`)
+- **Model-Agnostic**: Communicate with agent via Openrouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
 - **Simple CLI Interface**: Clean command-line interface using Node.js readline
 - **Environment Configuration**: Secure API key management via environment variables
 - **Basic Commands**: Easy-to-use commands for clearing history and exiting
@@ -94,9 +95,14 @@ Once running, you'll see a prompt where you can:
 Agent: I'm doing well, thank you! How can I assist you today?
 > What's the capital of France?
 Agent: The capital of France is Paris.
+> /save france-chat
+Saved conversation to 'france-chat.json' (4 messages)
 > clear
+Conversation history cleared.
+> /load france-chat
+Loaded conversation from 'france-chat.json' (4 messages)
 > What was the capital we just discussed?
-Agent: I don't have access to previous conversation history since you just cleared it.
+Agent: The capital of France is Paris.
 ```
 
 ## How It Works
