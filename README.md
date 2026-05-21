@@ -13,7 +13,7 @@ This project implements a simple yet powerful chat interface that leverages Open
 - **Model-Agnostic**: Communicate with agent via Openrouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
 - **Simple CLI Interface**: Clean command-line interface using Node.js readline
 - **Environment Configuration**: Secure API key management via environment variables
-- **Basic Commands**: Easy-to-use commands for clearing history and exiting
+- **Enhanced Clear Commands**: Granular control over conversation history with `/clear` (delete last message) and `/clear all` (reset entire history)
 - **Lightweight**: Minimal dependencies for easy setup and deployment
 
 ## Setup
@@ -84,7 +84,8 @@ node src/index.js
 Once running, you'll see a prompt where you can:
 - **Type messages**: Send any message to chat with the AI agent
 - **Use special commands**:
-  - `clear`: Clears the conversation history, starting fresh
+  - `/clear`: Deletes the last message from conversation history
+  - `/clear all`: Clears the entire conversation history, starting fresh
   - `exit`: Terminates the application
   - `Ctrl+C`: Also terminates the application (standard keyboard interrupt)
 
@@ -97,12 +98,14 @@ Agent: I'm doing well, thank you! How can I assist you today?
 Agent: The capital of France is Paris.
 > /save france-chat
 Saved conversation to 'france-chat.json' (4 messages)
-> clear
+> /clear
+Last message cleared.
+> /clear all
 Conversation history cleared.
 > /load france-chat
-Loaded conversation from 'france-chat.json' (4 messages)
+Loaded conversation from 'france-chat.json' (0 messages)
 > What was the capital we just discussed?
-Agent: The capital of France is Paris.
+Agent: I have no knowledge of any previous discussions about any capitals
 ```
 
 ## How It Works
@@ -129,7 +132,7 @@ The agent implements context-aware conversations by:
 1. Storing each user message and AI response in an internal history array
 2. Sending the complete conversation history with each API request
 3. Allowing the model to reference previous exchanges for contextual understanding
-4. Providing a `clear` function to reset this history when desired
+4. Providing granular clear functions: `clearLastMessage()` to remove the last message and `clearAllHistory()` to reset the entire conversation history
 
 ### Technical Details
 

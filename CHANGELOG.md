@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-05-22
+### Added
+- Granular clear commands: `/clear` to delete last message, `/clear all` to reset entire history
+
+
+## [Unreleased] - 2026-05-21
+### Changed
+- Chat loop in index.js to recognize and handle `/clear` and `/exit` commands
+- All commands in index.js to `/` commands to ensure consistency  
+
 ## [Unreleased] - 2026-05-19
 ### Added
 - Persistent conversation history that automatically saves/loads between sessions

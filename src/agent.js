@@ -40,7 +40,12 @@ export class ChatAgent {
     }
   }
 
-  clearHistory() {
+  clearLastMessage() {
+    this.history.pop();
+    this.saveHistory();
+  }
+
+  clearAllHistory() {
     this.history = [];
     this.saveHistory();
   }

@@ -12,7 +12,7 @@ const rl = readline.createInterface({
 
 const agent = new ChatAgent();
 
-console.log('Simple Chat Agent ("/clear" to reset history, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
+console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
 console.log('--------------------------------------------------');
 
 const chatLoop = () => {
@@ -23,7 +23,14 @@ const chatLoop = () => {
     }
 
     if (input.toLowerCase() === '/clear') {
-      agent.clearHistory();
+      agent.clearLastMessage();
+      console.log('Last message cleared.');
+      chatLoop();
+      return;
+    }
+
+    if (input.toLowerCase() === '/clear all') {
+      agent.clearAllHistory();
       console.log('Conversation history cleared.');
       chatLoop();
       return;

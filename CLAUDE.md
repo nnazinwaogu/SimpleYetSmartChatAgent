@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Install dependencies: `npm install`
 - Start the chat agent: `npm start` or `node src/index.js`
-- Clear conversation history during runtime: type `clear` in the chat interface
+- Clear conversation history during runtime:
+  - Type `/clear` to delete the last message
+  - Type `/clear all` to reset the entire conversation history
 - Exit the application: type `exit` in the chat interface or press Ctrl+C
 
 ## Project Structure
@@ -44,8 +46,8 @@ Copy `.env.example` to `.env` and add your API key to get started.
 ## Model Configuration
 
 The agent currently uses:
-- Model: `openrouter/auto` (automatically selects best available model)
+- Model: `nvidia/nemotron-3-super-120b-a12b:free` (NVIDIA's free model via OpenRouter)
 - Temperature: 0.7 (balanced creativity and consistency)
-- Max tokens: 1000 (limits response length)
+- Max tokens: 10000 (limits response length)
 
-These parameters are hardcoded in `src/agent.js` line 20-23.
+These parameters are hardcoded in `src/agent.js` lines 27-31.
