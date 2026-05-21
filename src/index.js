@@ -12,17 +12,17 @@ const rl = readline.createInterface({
 
 const agent = new ChatAgent();
 
-console.log('Simple Chat Agent ("clear" to reset history, "/save <filename>" to save, "/load <filename>" to load, "exit" to quit)');
+console.log('Simple Chat Agent ("/clear" to reset history, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
 console.log('--------------------------------------------------');
 
 const chatLoop = () => {
   rl.question('You: ', (input) => {
-    if (input.toLowerCase() === 'exit') {
+    if (input.toLowerCase() === '/exit') {
       rl.close();
       return;
     }
 
-    if (input.toLowerCase() === 'clear') {
+    if (input.toLowerCase() === '/clear') {
       agent.clearHistory();
       console.log('Conversation history cleared.');
       chatLoop();
