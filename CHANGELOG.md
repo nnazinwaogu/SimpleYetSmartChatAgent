@@ -13,13 +13,6 @@ All notable changes to this project will be documented in this file.
 - All commands in index.js to `/` commands to ensure consistency  
 
 ## [Unreleased] - 2026-05-19
-
-## [Commit: fcd276f41ed92f23507750dddf6f4ea3c3f3ce95] - 2026-05-21
-### Changed
-- Chat loop in index.js to recognize and handle `/clear` and `/exit` commands
-- All commands in index.js to `/` commands to ensure consistency  
-
-## [Commit: fcd276f41ed92f23507750dddf6f4ea3c3f3ce95] - 2026-05-19
 ### Added
 - Persistent conversation history that automatically saves/loads between sessions
 - Manual save/load conversation commands: `/save <filename>` and `/load <filename>`
