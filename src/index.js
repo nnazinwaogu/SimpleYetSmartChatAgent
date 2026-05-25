@@ -108,6 +108,7 @@ const chatLoop = () => {
         }
 
         agent.history = loadedHistory;
+        agent.historyFile = filePath; // Update history file path to the loaded file
         console.log(`Loaded conversation from '${jsonFilename}' (${agent.history.length} messages)`);
       } catch (error) {
         console.error(`Could not load conversation: ${error.message}`);

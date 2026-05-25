@@ -6,6 +6,8 @@ A simple command-line chat agent built with OpenRouter's Agent toolkit that prov
 
 This project implements a simple yet powerful chat interface that leverages OpenRouter's API to connect with various large language models. The agent maintains conversation context, allowing for coherent, context-aware dialogues. Built with Node.js, it offers a clean command-line experience for interacting with AI models through OpenRouter's unified API.
 
+The ChatAgent is now stateless on bootup - it starts with an empty conversation history and creates a session-specific history file (session-<timestamp>.json) on the first save, ensuring each conversation session gets its own dedicated history file.
+
 ## Features
 
 - **Persistent Conversation History**: Maintains context across messages and automatically saves/loads history between sessions

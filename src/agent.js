@@ -13,10 +13,11 @@ export class ChatAgent {
       apiKey: process.env.OPENROUTER_API_KEY,
     });
     this.history = [];
-    const __filename = fileURLToPath(import.meta.url);
+    //Legacy history file startup injection, Agent should now start with empty history (which automatically saves) and only load when user explicitly uses /load command
+    /*const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     this.historyFile = join(__dirname, '..', 'history', 'default-history.json');
-    this.loadHistory();
+    this.loadHistory();*/
   }
 
   async chat(message) {
@@ -70,7 +71,19 @@ export class ChatAgent {
       writeFileSync(this.historyFile, JSON.stringify(this.history, null, 2));
       console.log(`Saved ${this.history.length} messages to history`);
     } catch (error) {
-      console.warn('Could not save chat history:', error.message);
+      // If we can't save to the default location, try a fallback in the history directory
+      try {
+        const fallbackFileName = `session-${Date.now()}.json`;
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
+        const fallbackPath = join(__dirname, '..', 'history', fallbackFileName);
+        writeFileSync(fallbackPath, JSON.stringify(this.history, null, 2));
+        // Update historyFile to use the fallback for future saves
+        this.historyFile = fallbackPath;
+        console.log(`Saved ${this.history.length} messages to fallback history: ${fallbackFileName}`);
+      } catch (fallbackError) {
+        console.warn('Could not save chat history to either primary or fallback location:', error.message);
+      }
     }
   }
 }

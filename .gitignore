@@ -6,13 +6,4 @@ node_modules/
 .claude/
 
 #Tests
-TEST_RESULTS.md
-debug-agent.js
-
-# Misc
-FINAL_SUMMARY.md
-
-# History directory - keep directory but ignore contents
-history/
-!history/.gitkeep
-
+tests/
