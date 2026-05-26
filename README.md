@@ -215,7 +215,7 @@ If you encounter issues:
 - **Persistent History**: Save conversation history to disk between sessions
 - **Model Selection**: Allow users to choose specific models via command line
 - **Streaming Responses**: Implement real-time token streaming for better UX
-- **Additional Commands**: Add features like saving/loading conversations
+- ✅**Additional Commands**: Add features like saving/loading conversations  
 - **UI Improvements**: Colors, formatting, or even a web interface
 
 ### Contributing
