@@ -212,7 +212,7 @@ If you encounter issues:
 
 ### Potential Enhancements
 
-- **Persistent History**: Save conversation history to disk between sessions
+- ✅**Persistent History**: Save conversation history to disk between sessions
 - **Model Selection**: Allow users to choose specific models via command line
 - **Streaming Responses**: Implement real-time token streaming for better UX
 - ✅**Additional Commands**: Add features like saving/loading conversations  
