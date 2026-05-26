@@ -11,6 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Type `/clear all` to reset the entire conversation history
   - Type `/new` to start a new session with empty history
   - Type `/list` to see available session files
+  - Type `/rename <old> <new>` to rename session files
 - Exit the application: type `exit` in the chat interface or press Ctrl+C
 
 ## Project Structure

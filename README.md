@@ -12,7 +12,7 @@ The ChatAgent is now stateless on bootup - it starts with an empty conversation 
 
 - **Persistent Conversation History**: Maintains context across messages and automatically saves/loads history between sessions
 - **Manual Save/Load Conversations**: Save conversations to specific files (`/save <filename>`) and load them later (`/load <filename>`)
-- **Session Management**: Create new sessions with `/new` and list existing sessions with `/list`
+- **Session Management**: Create new sessions with `/new`, list existing sessions with `/list`, and rename sessions with `/rename <old> <new>`
 - **Model-Agnostic**: Communicate with agent via Openrouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
 - **Simple CLI Interface**: Clean command-line interface using Node.js readline
 - **Environment Configuration**: Secure API key management via environment variables
@@ -114,6 +114,11 @@ Started new session with empty history.
 > /list
 Available session files:
   1. france-chat.json
+> /rename france-chat.json france-conversation.json
+Renamed 'france-chat.json' to 'france-conversation.json'
+> /list
+Available session files:
+  1. france-conversation.json
 > /save new-chat
 Saved conversation to 'new-chat.json' (2 messages)
 ```

@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 - Stateless bootup for ChatAgent: starts with empty history and creates session-specific history files
 - Graceful fallback in saveHistory(): when primary history file cannot be written, saves to timestamped file in history/ directory
 - Updated saveHistory() mechanism: uses session-{timestamp}.json naming for fallback files and updates historyFile for future saves
-- New slash commands: '/new' to start a fresh session, '/list' to view available session files
+- New slash commands: '/new' to start a fresh session, '/list' to view available session files, '/rename <old> <new>' to rename session files
 
 ## [Unreleased] - 2026-05-22
 ### Added
