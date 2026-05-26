@@ -9,6 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Clear conversation history during runtime:
   - Type `/clear` to delete the last message
   - Type `/clear all` to reset the entire conversation history
+  - Type `/new` to start a new session with empty history
+  - Type `/list` to see available session files
 - Exit the application: type `exit` in the chat interface or press Ctrl+C
 
 ## Project Structure

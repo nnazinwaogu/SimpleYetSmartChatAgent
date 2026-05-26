@@ -1,6 +1,6 @@
 import { ChatAgent } from './agent.js';
 import readline from 'readline';
-import { existsSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, writeFileSync, readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -12,7 +12,7 @@ const rl = readline.createInterface({
 
 const agent = new ChatAgent();
 
-console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
+console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/new" for new session, "/list" to see sessions, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
 console.log('--------------------------------------------------');
 
 const chatLoop = () => {
@@ -32,6 +32,39 @@ const chatLoop = () => {
     if (input.toLowerCase() === '/clear all') {
       agent.clearAllHistory();
       console.log('Conversation history cleared.');
+      chatLoop();
+      return;
+    }
+
+    if (input.toLowerCase() === '/new') {
+      agent.historyFile = undefined; // Reset historyFile to force creation of a new session file on next save
+      agent.history = []; // Clear in-memory history
+      console.log('Started new session with empty history.');
+      chatLoop();
+      return;
+    }
+
+    if (input.toLowerCase() === '/list') {
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      const historyDir = join(__dirname, '..', 'history');
+
+      try {
+        const files = readdirSync(historyDir);
+        const jsonFiles = files.filter(file => file.endsWith('.json') && file !== '.gitignore');
+
+        if (jsonFiles.length === 0) {
+          console.log('No session files found in history directory');
+        } else {
+          console.log('Available session files:');
+          jsonFiles.forEach((file, index) => {
+            console.log(`  ${index + 1}. ${file}`);
+          });
+        }
+      } catch (error) {
+        console.error(`Could not read history directory: ${error.message}`);
+      }
+
       chatLoop();
       return;
     }
