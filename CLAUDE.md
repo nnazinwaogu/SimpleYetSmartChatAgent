@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Clear conversation history during runtime:
   - Type `/clear` to delete the last message
   - Type `/clear all` to reset the entire conversation history
+  - Type `/context` to show current conversation history length and estimated token usage
   - Type `/new` to start a new session with empty history
   - Type `/list` to see available session files
   - Type `/rename <old> <new>` to rename session files
@@ -53,6 +54,6 @@ Copy `.env.example` to `.env` and add your API key to get started.
 The agent currently uses:
 - Model: `nvidia/nemotron-3-super-120b-a12b:free` (NVIDIA's free model via OpenRouter)
 - Temperature: 0.7 (balanced creativity and consistency)
-- Max tokens: 10000 (limits response length)
+- Max tokens: 5000 (limits response length)
 
 These parameters are hardcoded in `src/agent.js` lines 27-31.

@@ -14,6 +14,7 @@ The ChatAgent is now stateless on bootup - it starts with an empty conversation 
 - **Manual Save/Load Conversations**: Save conversations to specific files (`/save <filename>`) and load them later (`/load <filename>`)
 - **Session Management**: Create new sessions with `/new`, list existing sessions with `/list`, and rename sessions with `/rename <old> <new>`
 - **Model-Agnostic**: Communicate with agent via Openrouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
+- **Context Monitoring**: Track your conversation's token usage with the `/context` command to stay within model limits
 - **Simple CLI Interface**: Clean command-line interface using Node.js readline
 - **Environment Configuration**: Secure API key management via environment variables
 - **Enhanced Clear Commands**: Granular control over conversation history with `/clear` (delete last message) and `/clear all` (reset entire history)
@@ -89,6 +90,7 @@ Once running, you'll see a prompt where you can:
 - **Use special commands**:
   - `/clear`: Deletes the last message from conversation history
   - `/clear all`: Clears the entire conversation history, starting fresh
+  - `/context`: Shows current conversation history length and estimated token usage relative to the model's context window
   - `exit`: Terminates the application
   - `Ctrl+C`: Also terminates the application (standard keyboard interrupt)
 
@@ -99,10 +101,16 @@ Once running, you'll see a prompt where you can:
 Agent: I'm doing well, thank you! How can I assist you today?
 > What's the capital of France?
 Agent: The capital of France is Paris.
+> /context
+Conversation history: 2 messages
+Estimated tokens used: 45/8192 (1%)
 > /save france-chat
 Saved conversation to 'france-chat.json' (4 messages)
 > /clear
 Last message cleared.
+> /context
+Conversation history: 1 messages
+Estimated tokens used: 22/8192 (0%)
 > /clear all
 Conversation history cleared.
 > /load france-chat
@@ -153,8 +161,17 @@ The agent implements context-aware conversations by:
 
 - **Model**: Currently uses `nvidia/nemotron-3-super-120b-a12b:free`
 - **Temperature**: Set to 0.7 for balanced creativity and consistency
-- **Max Tokens**: Limited to 10000 tokens per response to prevent excessively long outputs
+- **Max Tokens**: Limited to 5000 tokens per response to prevent excessively long outputs
 - **API Communication**: Uses OpenRouter's standardized API endpoint for model access
+
+### Context Monitoring
+
+The agent includes a `/context` command to help users monitor their conversation's token usage:
+- Estimates token count using ~4 characters per token for English text
+- Includes ~10 characters overhead per message for role formatting
+- Shows current message count, estimated token usage, and percentage of context window utilized
+- Context window size for the current model is 1000000 tokens
+- Provides warnings when usage exceeds 75% or 90% of the context window
 
 ## Configuration
 
@@ -172,7 +189,7 @@ Default parameters are configured in `src/agent.js` (lines 20-23):
 ```javascript
 const model = "nvidia/nemotron-3-super-120b-a12b:free";
 const temperature = 0.7;
-const maxTokens = 10000;
+const maxTokens = 5000;
 ```
 
 To modify these values:

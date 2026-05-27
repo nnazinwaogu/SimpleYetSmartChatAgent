@@ -13,11 +13,41 @@ export class ChatAgent {
       apiKey: process.env.OPENROUTER_API_KEY,
     });
     this.history = [];
+    this.model = 'nvidia/nemotron-3-super-120b-a12b:free';
     //Legacy history file startup injection, Agent should now start with empty history (which automatically saves) and only load when user explicitly uses /load command
     /*const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     this.historyFile = join(__dirname, '..', 'history', 'default-history.json');
     this.loadHistory();*/
+  }
+
+  /**
+   * Estimate token count for the conversation history
+   * Uses rough approximation: ~4 characters per token for English text
+   * @returns {number} Estimated token count
+   */
+  estimateTokenCount() {
+    let totalChars = 0;
+    for (const message of this.history) {
+      totalChars += message.content.length;
+      // Add overhead for role formatting (approximately 10 chars per message)
+      totalChars += 10;
+    }
+    // Rough estimate: 4 characters per token
+    return Math.ceil(totalChars / 4);
+  }
+
+  /**
+   * Get the context window size for the current model
+   * @returns {number} Context window size in tokens
+   */
+  getContextWindow() {
+    // Context window sizes for supported models
+    const modelContextWindows = {
+      'nvidia/nemotron-3-super-120b-a12b:free': 1000000,
+      // Add other models as needed
+    };
+    return modelContextWindows[this.model] || 8192; // Default to 8192 if model not found
   }
 
   async chat(message) {
@@ -28,7 +58,7 @@ export class ChatAgent {
           messages: this.history,
           model: 'nvidia/nemotron-3-super-120b-a12b:free',
           temperature: 0.7,
-          max_tokens: 10000
+          max_tokens: 5000
         }
       });
       const assistantMessage = response.choices[0].message.content;

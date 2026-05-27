@@ -12,7 +12,7 @@ const rl = readline.createInterface({
 
 const agent = new ChatAgent();
 
-console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/new" for new session, "/list" to see sessions, "/rename <old> <new>" to rename session, "/save <filename>" to save, "/load <filename>" to load, "/exit" to quit)');
+console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/new" for new session, "/list" to see sessions, "/rename <old> <new>" to rename session, "/save <filename>" to save, "/load <filename>" to load, "/context" to show context usage, "/exit" to quit)');
 console.log('--------------------------------------------------');
 
 const chatLoop = () => {
@@ -208,6 +208,26 @@ const chatLoop = () => {
       } catch (error) {
         console.error(`Could not load conversation: ${error.message}`);
       }
+      chatLoop();
+      return;
+    }
+
+    // /context command - shows current conversation history length and estimated token usage
+    if (input.toLowerCase() === '/context') {
+      const messageCount = agent.history.length;
+      const estimatedTokens = agent.estimateTokenCount();
+      const contextWindow = agent.getContextWindow();
+      const usagePercentage = Math.min(100, Math.round((estimatedTokens / contextWindow) * 100));
+
+      console.log(`Conversation history: ${messageCount} messages`);
+      console.log(`Estimated tokens used: ${estimatedTokens}/${contextWindow} (${usagePercentage}%)`);
+
+      if (usagePercentage > 90) {
+        console.log('Warning: Approaching context window limit!');
+      } else if (usagePercentage > 75) {
+        console.log('Notice: Using significant portion of context window');
+      }
+
       chatLoop();
       return;
     }
