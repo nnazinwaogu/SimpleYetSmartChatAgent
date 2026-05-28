@@ -14,6 +14,11 @@ export class ChatAgent {
     });
     this.history = [];
     this.model = 'nvidia/nemotron-3-super-120b-a12b:free';
+    // Load system prompt from environment
+    this.systemPrompt = process.env.SYSTEM_PROMPT || '';
+    this.persona = process.env.PERSONA || '';
+    this.temperature = 0.7;
+    this.maxTokens = 5000;
     //Legacy history file startup injection, Agent should now start with empty history (which automatically saves) and only load when user explicitly uses /load command
     /*const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
@@ -22,19 +27,47 @@ export class ChatAgent {
   }
 
   /**
-   * Estimate token count for the conversation history
+   * Estimate token count for the messages in the conversation history, excluding system prompt and persona 
    * Uses rough approximation: ~4 characters per token for English text
    * @returns {number} Estimated token count
    */
-  estimateTokenCount() {
+  estimateMessageTokenCount() {
     let totalChars = 0;
     for (const message of this.history) {
       totalChars += message.content.length;
       // Add overhead for role formatting (approximately 10 chars per message)
       totalChars += 10;
     }
-    // Rough estimate: 4 characters per token
     return Math.ceil(totalChars / 4);
+  }
+
+  /**
+   * Estimate token count for system prompt
+   * @returns {number} Estimated token count for system prompt
+   */
+  estimateSystemPromptTokenCount() {
+    if (!this.systemPrompt) return 0;
+    // Same rough approximation as estimateTokenCount
+    return Math.ceil((this.systemPrompt.length + 10) / 4);
+  }
+
+  /**
+   * Estimate token count for persona
+   * @returns {number} Estimated token count for persona
+   */
+  estimatePersonaTokenCount() {
+    if (!this.persona) return 0;
+    // Same rough approximation as estimateTokenCount
+    return Math.ceil((this.persona.length + 10) / 4);
+  }
+
+  /**
+   * Estimate the total token count for the conversation history
+   * Uses rough approximation: ~4 characters per token for English text
+   * @returns {number} Estimated token count
+   */
+  estimateTotalTokenCount() {
+    return this.estimateMessageTokenCount() + this.estimateSystemPromptTokenCount() + this.estimatePersonaTokenCount();
   }
 
   /**
@@ -44,7 +77,7 @@ export class ChatAgent {
   getContextWindow() {
     // Context window sizes for supported models
     const modelContextWindows = {
-      'nvidia/nemotron-3-super-120b-a12b:free': 1000000,
+      'nvidia/nemotron-3-super-120b-a12b:free': 262144,
       // Add other models as needed
     };
     return modelContextWindows[this.model] || 8192; // Default to 8192 if model not found
@@ -53,12 +86,20 @@ export class ChatAgent {
   async chat(message) {
     this.history.push({ role: 'user', content: message });
     try {
+      // Prepare messages array: system prompt (if set) + history
+      const messagesForAPI = [];
+      if (this.systemPrompt && this.persona) {
+        const combinedPrompt = `${this.systemPrompt}\n\n${this.persona}`;
+        messagesForAPI.push({ role: 'system', content: combinedPrompt });
+      }
+      messagesForAPI.push(...this.history);
+
       const response = await this.agent.chat.send({
         chatRequest: {
-          messages: this.history,
-          model: 'nvidia/nemotron-3-super-120b-a12b:free',
-          temperature: 0.7,
-          max_tokens: 5000
+          messages: messagesForAPI,
+          model: this.model,
+          temperature: this.temperature,
+          max_tokens: this.maxTokens
         }
       });
       const assistantMessage = response.choices[0].message.content;

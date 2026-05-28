@@ -47,7 +47,28 @@ The agent requires an OpenRouter API key stored in `.env`:
 OPENROUTER_API_KEY=your_actual_api_key_here
 ```
 
-Copy `.env.example` to `.env` and add your API key to get started.
+Optionally, you can configure a system prompt to influence the agent's behavior/personality:
+```
+SYSTEM_PROMPT="You have these specific capabilities:
+- Persistent conversation history: Automatically saves each turn and saves/loads between sessions, with manual control via /save <filename> and /load <filename>
+- Session management: Start fresh sessions with /new, list sessions with /list, rename sessions with /rename <old> <new>
+- Context awareness: Track token usage with /context (current model: nvidia/nemotron-3-super-120b-a12b:free with 262K token context)
+- Message control: Delete last message with /clear, clear all history with /clear all
+- Model flexibility: Works with various models via OpenRouter API (configured via environment variable)
+
+When users ask about your capabilities, explain them clearly and helpfully. If unsure about a feature, be honest about your limitations. Focus on collaborative problem-solving and creative exploration while providing practical, actionable assistance."
+```
+
+And optionally configure a persona to define the agent's character and interaction style:
+```
+PERSONA="You are a creative collaborator that helps with brainstorming, problem-solving, and exploring ideas. You think outside the box while staying grounded in practicality."
+```
+
+Copy `.env.example` to `.env` and add your API key (and optional system prompt/persona) to get started.
+
+> **Note**: The `SYSTEM_PROMPT` and `PERSONA` are loaded from environment variables only (no runtime changes via slash commands) and influence agent responses without being stored in conversation history. They are included in the token count displayed by the `/context` command.
+>
+> **Important**: The `SYSTEM_PROMPT` in `.env.example` contains the core capability description that should not be removed or significantly altered, as it affects core functionality. To customize the agent's behavior, you can append additional instructions to the existing prompt or modify the `PERSONA` variable to change the agent's tone and approach while retaining core functionalities.
 
 ## Model Configuration
 

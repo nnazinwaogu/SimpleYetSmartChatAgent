@@ -96,40 +96,7 @@ Once running, you'll see a prompt where you can:
 
 ### Example Session
 
-```
-> Hello, how are you today?
-Agent: I'm doing well, thank you! How can I assist you today?
-> What's the capital of France?
-Agent: The capital of France is Paris.
-> /context
-Conversation history: 2 messages
-Estimated tokens used: 45/8192 (1%)
-> /save france-chat
-Saved conversation to 'france-chat.json' (4 messages)
-> /clear
-Last message cleared.
-> /context
-Conversation history: 1 messages
-Estimated tokens used: 22/8192 (0%)
-> /clear all
-Conversation history cleared.
-> /load france-chat
-Loaded conversation from 'france-chat.json' (0 messages)
-> What was the capital we just discussed?
-Agent: I have no knowledge of any previous discussions about any capitals
-> /new
-Started new session with empty history.
-> /list
-Available session files:
-  1. france-chat.json
-> /rename france-chat.json france-conversation.json
-Renamed 'france-chat.json' to 'france-conversation.json'
-> /list
-Available session files:
-  1. france-conversation.json
-> /save new-chat
-Saved conversation to 'new-chat.json' (2 messages)
-```
+See ChatAgentExample.txt in the docs\ folder
 
 ## How It Works
 
@@ -170,18 +137,20 @@ The agent includes a `/context` command to help users monitor their conversation
 - Estimates token count using ~4 characters per token for English text
 - Includes ~10 characters overhead per message for role formatting
 - Shows current message count, estimated token usage, and percentage of context window utilized
-- Context window size for the current model is 1000000 tokens
+- Context window size for the current model is 262144 tokens
 - Provides warnings when usage exceeds 75% or 90% of the context window
 
 ## Configuration
 
 ### Environment Variables
 
-The agent requires the following environment variable in your `.env` file:
+The agent requires the following environment variables in your `.env` file:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `OPENROUTER_API_KEY` | Your OpenRouter API key for authentication | `sk-or-...` |
+| `SYSTEM_PROMPT` | Optional: System prompt to configure agent's core capabilities (not stored in conversation history) | See `.env.example` for full default value |
+| `PERSONA` | Optional: Persona description to define agent's character and interaction style (not stored in conversation history) | `"You are a creative collaborator that helps with brainstorming, problem-solving, and exploring ideas."` |
 
 ### Code-Level Configuration
 
@@ -196,6 +165,10 @@ To modify these values:
 1. Edit `src/agent.js`
 2. Adjust the constants as needed
 3. Restart the application for changes to take effect
+
+**Note**: The `SYSTEM_PROMPT` and `PERSONA` are loaded from environment variables only (no runtime changes via slash commands) and influence agent responses without being stored in conversation history. They are included in the token count displayed by the `/context` command.
+
+**Important**: The `SYSTEM_PROMPT` in `.env.example` contains the core capability description that should not be removed or significantly altered, as it affects core functionality. To customize the agent's behavior, you can append additional instructions to the existing prompt or modify the `PERSONA` variable to change the agent's tone and approach while retaining core functionalities.
 
 ## Requirements
 

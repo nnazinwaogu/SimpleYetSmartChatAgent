@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-05-27
+### Added
+- System Prompt Feature: Added SYSTEM_PROMPT and PERSONA environment variables to configure agent behavior/personality without storing in conversation history
+  - Loaded from environment variable only (no runtime slash commands)
+  - Influences agent responses while keeping conversation history clean
+  - Included in token count displayed by /context command for accurate context awareness
+
+- Agent variables (agents.js): Added constants like `this.systemPrompt` and `this.temperature` for better agent configuration
+- Token Estimation Functions (agent.js): Added `estimateMessageTokenCount()`, `estimateSystemPromptTokenCount()` and `estimatePersonaTokenCount()` for a more modular method of calculating context usage 
+- Modular Token Calculation (index.js): Added constants `estimatedMessageTokens`, `estimatedSystemPromptTokens`, `estimatedPersonaTokens`, `estimatedTotalTokens`, in order to calculation the total token use in a more modular fashion
+- New-line CLI UI Improvement (index.js): Added newline escape chars `\n` before the user and agent respone to introduce line breaks after the user message and before the agent response for a single-line gap 
+
+### Changed
+- Total Token Count Func Declaration & Implementation (agent.js): Changed `estimateTokenCount()` to `estimatedTotalTokenCount()` and changed the implementaion to call and add the results of `estimateMessageTokenCount()`, `estimateSystemPromptTokenCount()` and `estimatePersonaTokenCount()` in order to calculate the total token count
+- docs`\`.gitignore: Changed the .gitignore to include a sample run .txt file in the docs folder
+
+### Fixed
+- Nemotron 3 Super Context Window Size: Fixed the default model (nvidia/nemotron-3-super-120b-a12b:free) context window size from 1M to approximately 262144K tokens
+
 ## [Unreleased] - 2026-05-26
 ### Added
 - Stateless bootup for ChatAgent: starts with empty history and creates session-specific history files

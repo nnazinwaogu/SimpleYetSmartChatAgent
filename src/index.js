@@ -12,11 +12,12 @@ const rl = readline.createInterface({
 
 const agent = new ChatAgent();
 
-console.log('Simple Chat Agent ("/clear" to delete last message, "/clear all" to reset history, "/new" for new session, "/list" to see sessions, "/rename <old> <new>" to rename session, "/save <filename>" to save, "/load <filename>" to load, "/context" to show context usage, "/exit" to quit)');
+console.log('Simple Chat Agent') 
+console.log('(/clear" to delete last message, "/clear all" to reset history, "/new" for new session, "/list" to see sessions, "/rename <old> <new>" to rename session, "/save <filename>" to save, "/load <filename>" to load, "/context" to show context usage, "/exit" to quit)');
 console.log('--------------------------------------------------');
 
 const chatLoop = () => {
-  rl.question('You: ', (input) => {
+  rl.question('\nYou: ', (input) => {
     if (input.toLowerCase() === '/exit') {
       rl.close();
       return;
@@ -215,12 +216,16 @@ const chatLoop = () => {
     // /context command - shows current conversation history length and estimated token usage
     if (input.toLowerCase() === '/context') {
       const messageCount = agent.history.length;
-      const estimatedTokens = agent.estimateTokenCount();
+      const estimatedMessageTokens = agent.estimateMessageTokenCount();
+      const estimatedSystemPromptTokens = agent.estimateSystemPromptTokenCount();
+      const estimatedPersonaTokens = agent.estimatePersonaTokenCount();
+      const estimatedTotalTokens = agent.estimateTotalTokenCount();
       const contextWindow = agent.getContextWindow();
-      const usagePercentage = Math.min(100, Math.round((estimatedTokens / contextWindow) * 100));
+      const usagePercentage = Math.min(100, Math.round((estimatedTotalTokens / contextWindow) * 100));
 
       console.log(`Conversation history: ${messageCount} messages`);
-      console.log(`Estimated tokens used: ${estimatedTokens}/${contextWindow} (${usagePercentage}%)`);
+      console.log(`Estimated tokens used: ${estimatedTotalTokens}/${contextWindow} (${usagePercentage}%)`);
+      console.log(`Message tokens: ${estimatedMessageTokens}, System Prompt tokens: ${estimatedSystemPromptTokens}, Persona tokens: ${estimatedPersonaTokens}`);
 
       if (usagePercentage > 90) {
         console.log('Warning: Approaching context window limit!');
@@ -234,7 +239,7 @@ const chatLoop = () => {
 
     agent.chat(input)
       .then(response => {
-        console.log(`Agent: ${response}\n`);
+        console.log(`\nAgent: ${response}\n`);
         chatLoop();
       })
       .catch(error => {
