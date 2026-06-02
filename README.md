@@ -1,6 +1,6 @@
-# Simple Chat Agent using OpenRouter Agent
+# Simple Chat Agent using OpenRouter Agent v1.0.0
 
-A simple command-line chat agent built with OpenRouter's Agent toolkit that provides conversational AI capabilities with persistent conversation history.
+A simple command-line chat agent built with OpenRouter's Agent toolkit that provides conversational AI capabilities with persistent conversation history and web search/fetch tools.
 
 ## Overview
 
@@ -10,10 +10,14 @@ The ChatAgent is now stateless on bootup - it starts with an empty conversation 
 
 ## Features
 
+- **Web Search & Fetch Tools**: Real-time web information retrieval using DuckDuckGo Instant Answer API (`web_search`) and page-fetching with HTML-to-text conversion (`web_fetch`)
+- **Intelligent Agentic Loop**: Up to 10 iterations of tool calling — the model can search, read results, and search again to find what you need
+- **Parallel Tool Execution**: The model can make multiple web searches and fetches simultaneously for efficient information gathering
+- **SSRF Protection**: Web fetch blocks private/internal network addresses (localhost, 10.x, 192.168.x, etc.) for security
 - **Persistent Conversation History**: Maintains context across messages and automatically saves/loads history between sessions
 - **Manual Save/Load Conversations**: Save conversations to specific files (`/save <filename>`) and load them later (`/load <filename>`)
 - **Session Management**: Create new sessions with `/new`, list existing sessions with `/list`, and rename sessions with `/rename <old> <new>`
-- **Model-Agnostic**: Communicate with agent via Openrouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
+- **Model-Agnostic**: Communicate with agent via OpenRouter API key, allowing access to various models. Currently uses NVIDIA's `nvidia/nemotron-3-super-120b-a12b:free` free model
 - **Context Monitoring**: Track your conversation's token usage with the `/context` command to stay within model limits
 - **Simple CLI Interface**: Clean command-line interface using Node.js readline
 - **Environment Configuration**: Secure API key management via environment variables
@@ -43,7 +47,9 @@ npm install
 ```
 
 This will install:
-- `@openrouter/sdk`: OpenRouter's official sdk toolkit
+- `@openrouter/sdk`: OpenRouter's official SDK toolkit
+- `axios`: HTTP client for web search and page fetching
+- `html-to-text`: HTML-to-readable-text conversion for web fetch
 - `dotenv`: For loading environment variables from `.env` file
 - (Node.js built-in `readline` module for CLI interface)
 
@@ -86,13 +92,24 @@ node src/index.js
 ### Interacting with the Agent
 
 Once running, you'll see a prompt where you can:
-- **Type messages**: Send any message to chat with the AI agent
-- **Use special commands**:
+- **Type messages**: Send any message to chat with the AI agent — including requests to search the web or fetch web pages
+- **Use slash commands**:
   - `/clear`: Deletes the last message from conversation history
   - `/clear all`: Clears the entire conversation history, starting fresh
+  - `/new`: Start a new session with empty history
+  - `/list`: Lists all available session files in the history directory
+  - `/save <filename>`: Save current conversation to a named file
+  - `/load <filename>`: Load a previously saved conversation
+  - `/rename <old> <new>`: Rename a session file
   - `/context`: Shows current conversation history length and estimated token usage relative to the model's context window
-  - `exit`: Terminates the application
-  - `Ctrl+C`: Also terminates the application (standard keyboard interrupt)
+  - `exit` or `Ctrl+C`: Terminates the application
+
+### Web Search & Fetch Examples
+
+The agent can search the web and fetch page content on demand:
+- **"Search for the latest developments in AI"** — agent uses `web_search` tool to query DuckDuckGo
+- **"Fetch the content from https://example.com/article"** — agent uses `web_fetch` tool to retrieve and summarize page content
+- **"Research quantum computing and summarize what you find"** — agent may make multiple search/fetch calls in sequence to gather comprehensive information
 
 ### Example Session
 
@@ -107,14 +124,15 @@ The agent follows a straightforward two-layer architecture:
 1. **Interface Layer** (`src/index.js`):
    - Handles user input and output via Node.js `readline` module
    - Manages the main application loop
-   - Processes special commands (`clear`, `exit`)
+   - Processes slash commands (`clear`, `save`, `load`, `new`, `list`, `rename`, `context`, `exit`)
    - Routes user messages to the agent layer
 
 2. **Agent Layer** (`src/agent.js`):
    - Encapsulates all OpenRouter API interactions
    - Maintains conversation history in memory
-   - Formats requests to OpenRouter with proper parameters
-   - Handles API responses and error conditions
+   - Defines tool schemas (`web_search`, `web_fetch`) for the model to invoke
+   - Implements an **agentic loop** for multi-step tool-using conversations
+   - Handles API responses, tool execution, and error conditions
 
 ### Conversation Management
 
@@ -124,18 +142,44 @@ The agent implements context-aware conversations by:
 3. Allowing the model to reference previous exchanges for contextual understanding
 4. Providing granular clear functions: `clearLastMessage()` to remove the last message and `clearAllHistory()` to reset the entire conversation history
 
+### Web Tool System
+
+The agent includes two built-in tools for real-time web access:
+
+- **`web_search(query)`**: Uses the DuckDuckGo Instant Answer API (free, no API key required). Returns abstract text, direct answers, related topics, and source URLs. Handles nested topic structures gracefully.
+
+- **`web_fetch(url)`**: Fetches a web page and converts HTML to readable text. Features include:
+  - URL validation and SSRF protection (blocks `localhost`, `127.0.0.1`, private IP ranges, `.local`, `.internal`)
+  - 15-second timeout with browser-mimicking User-Agent header
+  - HTML-to-text conversion that strips scripts, styles, nav, footer, and header elements
+  - 3000-character truncation with truncation notice
+
+#### Agentic Loop
+
+When the model decides to use tools, the `chat()` method enters an **iterative agentic loop** (up to 10 iterations):
+1. Sends conversation history plus tool definitions to the model
+2. If the model responds with tool calls → executes all requested tools in parallel via `Promise.all()`
+3. Returns tool results to the model for synthesis
+4. Repeats until the model provides a final text response (or max iterations reached)
+5. All tool errors are returned as strings to the model (never thrown), allowing the model to self-correct
+
+This enables sophisticated multi-step research: the model can search, read results, search again with refined queries, and synthesize findings — all autonomously.
+
 ### Technical Details
 
 - **Model**: Currently uses `nvidia/nemotron-3-super-120b-a12b:free`
 - **Temperature**: Set to 0.7 for balanced creativity and consistency
 - **Max Tokens**: Limited to 5000 tokens per response to prevent excessively long outputs
-- **API Communication**: Uses OpenRouter's standardized API endpoint for model access
+- **Tool Iteration Limit**: Maximum 10 tool-use iterations to prevent infinite loops
+- **API Communication**: Uses OpenRouter's standardized API endpoint for model access with `parallelToolCalls: true` for concurrent tool execution
+- **SDK Compatibility**: Uses camelCase property names in-memory (`toolCalls`, `toolCallId`); OpenRouter SDK auto-converts to snake_case for the wire format
 
 ### Context Monitoring
 
 The agent includes a `/context` command to help users monitor their conversation's token usage:
 - Estimates token count using ~4 characters per token for English text
 - Includes ~10 characters overhead per message for role formatting
+- Includes estimated tokens for system prompt and persona
 - Shows current message count, estimated token usage, and percentage of context window utilized
 - Context window size for the current model is 262144 tokens
 - Provides warnings when usage exceeds 75% or 90% of the context window
@@ -207,10 +251,13 @@ If you encounter issues:
 
 ### Potential Enhancements
 
+- ✅**Web Search & Fetch**: Real-time web information retrieval with DuckDuckGo and page fetching
 - ✅**Persistent History**: Save conversation history to disk between sessions
-- **Model Selection**: Allow users to choose specific models via command line
+- ✅**Session Management**: New session, list, rename, save, and load commands
+- ✅**Context Monitoring**: Track token usage relative to model's context window
+- ✅**System Prompt & Persona**: Configurable agent behavior via environment variables  
+- **Model Selection**: Allow users to choose specific models via command line or slash command
 - **Streaming Responses**: Implement real-time token streaming for better UX
-- ✅**Additional Commands**: Add features like saving/loading conversations  
 - **UI Improvements**: Colors, formatting, or even a web interface
 
 ### Contributing
