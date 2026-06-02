@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-06-02
+## Changed 
+- Name of the package: Changed from antropicagentsdkproject to simple-yet-smart-chat-agent to more accurately describe the package. 
+
 ## [1.0.0] - 2026-06-02
 ### Added
 - Web search tool (`web_search`): DuckDuckGo Instant Answer API integration for real-time web searching
