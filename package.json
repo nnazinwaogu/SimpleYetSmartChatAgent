@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["openrouter", "agent", "chat", "ai"],
-  "author": "",
+  "author": "Nnazirim Nwaogu",
   "license": "ISC",
   "dependencies": {
     "@openrouter/sdk": "^0.12.35",

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-06-03
+## Added 
+- Author of the package: Myself (Nnazirim Nwaogu) as the author of the package
+
 ## [1.0.1] - 2026-06-02
 ## Changed 
 - Name of the package: Changed from antropicagentsdkproject to simple-yet-smart-chat-agent to more accurately describe the package. 
