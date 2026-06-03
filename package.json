@@ -1,6 +1,6 @@
 {
   "name": "simple-yet-smart-chat-agent",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A simple chat agent using OpenRouter's Agent toolkit",
   "main": "src/index.js",
   "type": "module",
