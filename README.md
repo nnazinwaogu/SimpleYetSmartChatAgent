@@ -1,4 +1,4 @@
-# Simple Chat Agent using OpenRouter Agent v1.0.0
+# Simple Chat Agent using OpenRouter Agent v1.0.3
 
 A simple command-line chat agent built with OpenRouter's Agent toolkit that provides conversational AI capabilities with persistent conversation history and web search/fetch tools.
 
