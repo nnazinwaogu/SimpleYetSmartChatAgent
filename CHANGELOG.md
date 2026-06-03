@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-06-03
+## Added 
+- Author of the package: Myself (Nnazirim Nwaogu) as the author of the package
+
+## [1.0.1] - 2026-06-02
+## Changed 
+- Name of the package: Changed from antropicagentsdkproject to simple-yet-smart-chat-agent to more accurately describe the package. 
+
+## [1.0.0] - 2026-06-02
+### Added
+- Web search tool (`web_search`): DuckDuckGo Instant Answer API integration for real-time web searching
+- Web fetch tool (`web_fetch`): URL fetching with HTML-to-text conversion, SSRF protection, and 3000-char truncation
+- Agentic loop in `chat()`: Iterative while-loop (max 10 iterations) enabling multi-step tool-using conversations
+- Parallel tool execution: Model can issue multiple concurrent tool calls via `parallelToolCalls: true` and `Promise.all()`
+- Static tool definitions: `ChatAgent.TOOLS` array with JSON Schemas for `web_search` and `web_fetch`
+- Tool error handling: Tool errors returned as strings to the model (never thrown), enabling self-correction
+- Token counting for tool-call messages: `estimateMessageTokenCount()` now accounts for `toolCalls` JSON length when content is null
+- Documentation: Expanded README with web tool system section, agentic loop explanation, and usage examples
+
+### Changed
+- Dependencies: Added `axios: ^1.7.2` and `html-to-text: ^9.0.5` to `package.json`
+- `.env.example`: Added web search & fetch capability line to system prompt template
+- README updated to v1.0.0 with comprehensive feature documentation
+
 ## [Unreleased] - 2026-05-27
 ### Added
 - System Prompt Feature: Added SYSTEM_PROMPT and PERSONA environment variables to configure agent behavior/personality without storing in conversation history

@@ -1,5 +1,5 @@
 {
-  "name": "antropicagentsdkproject",
+  "name": "simple-yet-smart-chat-agent",
   "version": "1.0.0",
   "description": "A simple chat agent using OpenRouter's Agent toolkit",
   "main": "src/index.js",
@@ -9,11 +9,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["openrouter", "agent", "chat", "ai"],
-  "author": "",
+  "author": "Nnazirim Nwaogu",
   "license": "ISC",
   "dependencies": {
     "@openrouter/sdk": "^0.12.35",
+    "axios": "^1.7.2",
     "dotenv": "^17.4.2",
+    "html-to-text": "^9.0.5",
     "readline-sync": "^1.4.10"
   }
 }
