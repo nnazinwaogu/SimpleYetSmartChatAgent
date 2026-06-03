@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Type `/list` to see available session files
   - Type `/rename <old> <new>` to rename session files
 - Save/load sessions: `/save <filename>`, `/load <filename>`
-- Exit the application: type `exit` in the chat interface or press Ctrl+C
+- Exit the application: type `/exit` in the chat interface or press Ctrl+C
 
 ## Project Structure
 
